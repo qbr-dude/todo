@@ -1,0 +1,33 @@
+.list {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    width: 900px;
+    max-width: 944px;
+    margin: 10px;
+    padding: 25px 30px;
+    background-color: #F6F5FF;
+    color: #51459E;
+
+    transition: all .2s;
+
+    &:hover {
+        cursor: pointer;
+        background-color: rgba(56, 52, 169, 0.3);
+    }
+}
+
+.name {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}

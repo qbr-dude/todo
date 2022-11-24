@@ -1,0 +1,18 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #51459E;
+    color: #51459E;
+    padding: 15px 20px;
+
+}
+
+.label {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.chunk {
+    font-size: 18px;
+}

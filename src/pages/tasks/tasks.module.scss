@@ -1,0 +1,49 @@
+$queue-color: #F75990;
+$dev-color: #FFF685;
+$done-color: #00DDFF;
+
+
+
+
+.stages {
+    padding: 10px 25px;
+    display: flex;
+    justify-content: space-between;
+
+    @media (max-width: 1024px) {
+        flex-direction: column;
+    }
+}
+
+.stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32%;
+    height: 90vh;
+    max-height: 100vh;
+    margin: 5px;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        height: 30vh;
+    }
+}
+
+.queue {
+    background-color: rgba($queue-color, 0.4);
+}
+
+.development {
+    background-color: rgba($dev-color, 0.4);
+}
+
+.done {
+    background-color: rgba($done-color, 0.4);
+}
+
+.label {
+    font-size: 30px;
+    font-weight: bold;
+    color: #51459E;
+}
