@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
-import { DragDropContext, Draggable, DraggableProvided, Droppable, DroppableProvided, DropResult, } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styles from './tasks.module.scss';
-import { IMoveResult, ITask } from '../../types';
-import { moveTask } from '../../helpers';
-
-type Props = {}
+import { IMoveResult, ITask, ITaskStateLists } from '../../types/types';
+import { moveTask, reorder } from '../../helpers';
+import Stage from '../../components/project/stage';
+import { ModalTaskView } from '../../components/project/task';
+import { actionTypes } from '../../store/stateListsReducer';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
 const initQueueTasks: ITask[] = [
     { id: "queue-0", name: 'some' },
@@ -27,21 +29,26 @@ const initDoneTasks: ITask[] = [
     { id: "done-3", name: 'some' },
 ]
 
-const reorder = (list: ITask[], startIndex: number, endIndex: number): ITask[] => {
-    const result = [...list];
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-};
+type Props = {}
 
 const Tasks = (props: Props) => {
     const { id } = useParams();
+    const dispatch = useAppDispatch();
+    const stateLists = useAppSelector(state => state);
+    const [shownModal, setShownModal] = useState('hidden');
 
-    const [queueTasks, setQueueTasks] = useState(initQueueTasks);
-    const [devTask, setDevTask] = useState(initDevTasks);
-    const [doneTask, setDoneTask] = useState(initDoneTasks)
+    // инициализация задач для текущего проекта
+    useEffect(() => {
+        const initList: ITaskStateLists = {
+            queue: initQueueTasks,
+            development: initDevTasks,
+            done: initDoneTasks,
+        }
 
+        dispatch({ type: actionTypes.UPDATE_FULL_STATE, payload: initList })
+    }, [])
+
+    // обработка перемещения задачи
     const onDragEnd = (result: DropResult) => {
         const { source, destination } = result;
 
@@ -49,20 +56,34 @@ const Tasks = (props: Props) => {
             return;
 
         if (source.droppableId === destination.droppableId) {
+            // перемещение внутри stage
+            const tasks = reorder(
+                stateLists[source.droppableId as keyof typeof stateLists],
+                source.index,
+                destination.index
+            );
 
-            if (destination.droppableId === 'stage-queue')
-                setQueueTasks(reorder(queueTasks, source.index, destination.index));
-            if (destination.droppableId === 'stage-development')
-                setDevTask(reorder(devTask, source.index, destination.index));
-            if (destination.droppableId === 'stage-done')
-                setDoneTask(reorder(doneTask, source.index, destination.index));
+            if (destination.droppableId === 'queue')
+                dispatch({ type: actionTypes.UPDATE_QUEUE, payload: tasks });
+            else if (destination.droppableId === 'development')
+                dispatch({ type: actionTypes.UPDATE_DEVELOPMENT, payload: tasks });
+            else if (destination.droppableId === 'done')
+                dispatch({ type: actionTypes.UPDATE_DONE, payload: tasks });
 
         } else {
+            // Перемещение между stages
             const moveResult: IMoveResult = moveTask(
-
+                stateLists[source.droppableId as keyof typeof stateLists],
+                stateLists[destination.droppableId as keyof typeof stateLists],
+                source,
+                destination
             )
 
+            const stateToPush = stateLists;
+            stateToPush[moveResult.oldStateName as keyof typeof stateToPush] = moveResult.oldStageList!;
+            stateToPush[moveResult.newStateName as keyof typeof stateToPush] = moveResult.newStageList!;
 
+            dispatch({ type: actionTypes.UPDATE_FULL_STATE, payload: stateToPush });
         }
 
     }
@@ -72,92 +93,23 @@ const Tasks = (props: Props) => {
             <Helmet>
                 <title>Project №{id}</title>
             </Helmet>
-            <div>{id}</div>
+            <div className={styles.header}>
+                <div className={styles.naming}>
+                    <span>Project №{id}</span>
+                    <span>Количество задач: 150</span>
+                </div>
+                <div>
+                    <button>Add new task</button>
+                </div>
+            </div>
             <DragDropContext onDragEnd={onDragEnd}>
                 <div className={styles.stages}>
-                    <Droppable droppableId='stage-queue'>
-                        {(provided: DroppableProvided) => (
-                            <div
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                className={`${styles.stage} ${styles.queue}`}
-                            >
-                                {queueTasks.map((task, index) =>
-                                    <Draggable
-                                        key={task.id}
-                                        draggableId={task.id}
-                                        index={index}
-                                    >
-                                        {(providedDraggable: DraggableProvided) => (
-                                            <div
-                                                className={`${styles.task} ${styles['task-queue']}`}
-                                                ref={providedDraggable.innerRef}
-                                                {...providedDraggable.draggableProps}
-                                                {...providedDraggable.dragHandleProps}>
-                                                <span>{task.id}</span>
-                                            </div>
-                                        )}
-                                    </Draggable>)}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                    <Droppable droppableId='stage-development'>
-                        {(provided: DroppableProvided) => (
-                            <div
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                className={`${styles.stage} ${styles.development}`}
-                            >
-                                {devTask.map((task, index) =>
-                                    <Draggable
-                                        key={task.id}
-                                        draggableId={task.id}
-                                        index={index}
-                                    >
-                                        {(providedDraggable: DraggableProvided) => (
-                                            <div
-                                                className={`${styles.task} ${styles['task-dev']}`}
-                                                ref={providedDraggable.innerRef}
-                                                {...providedDraggable.draggableProps}
-                                                {...providedDraggable.dragHandleProps}>
-                                                <span>{task.id}</span>
-                                            </div>
-                                        )}
-                                    </Draggable>)}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                    <Droppable droppableId='stage-done'>
-                        {(provided: DroppableProvided) => (
-                            <div
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                className={`${styles.stage} ${styles.done}`}
-                            >
-                                {doneTask.map((task, index) =>
-                                    <Draggable
-                                        key={task.id}
-                                        draggableId={task.id}
-                                        index={index}
-                                    >
-                                        {(providedDraggable: DraggableProvided) => (
-                                            <div
-                                                className={`${styles.task} ${styles['task-done']}`}
-                                                ref={providedDraggable.innerRef}
-                                                {...providedDraggable.draggableProps}
-                                                {...providedDraggable.dragHandleProps}>
-                                                <span>{task.id}</span>
-                                            </div>
-                                        )}
-                                    </Draggable>)}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
+                    <Stage name='queue' list={stateLists.queue} />
+                    <Stage name='development' list={stateLists.development} />
+                    <Stage name='done' list={stateLists.done} />
                 </div>
             </DragDropContext>
+            <ModalTaskView status='hidden' />
         </div>
     )
 }

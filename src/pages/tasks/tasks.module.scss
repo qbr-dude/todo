@@ -1,6 +1,4 @@
-$queue-color: #F75990;
-$dev-color: #FDBC64;
-$done-color: #00DDFF;
+@import "./../../colors";
 
 .stages {
     padding: 10px 25px;
@@ -9,22 +7,21 @@ $done-color: #00DDFF;
     justify-content: space-between;
 
     @media (max-width: 1024px) {
-        flex-direction: column-reverse;
+        flex-direction: column;
     }
 }
 
 .stage {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     width: 32%;
-    // height: 90vh;
-    max-height: 100vh;
+    min-height: 250px;
+    height: fit-content;
     margin: 5px;
+    user-select: none;
 
     @media (max-width: 1024px) {
         width: 100%;
-        // height: 30vh;
     }
 }
 
@@ -41,28 +38,32 @@ $done-color: #00DDFF;
 }
 
 .label {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
     font-size: 30px;
+    padding: 10px 0;
     font-weight: bold;
     color: #51459E;
 }
 
-.task {
-    padding: 5px 10px;
-    width: 100%;
-    height: 100px;
-    margin: 10px;
-    border-radius: 5px;
-    cursor: pointer;
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 25px;
+}
 
-    &-queue {
-        background-color: $queue-color;
+.naming {
+    font-size: 25px;
+    padding: 0 25px;
+
+    span {
+        display: block;
+        color: $sub-general-color;
     }
 
-    &-dev {
-        background-color: $dev-color;
-    }
-
-    &-done {
-        background-color: $done-color;
+    span:first-child {
+        font-size: 30px;
+        font-weight: bold;
     }
 }

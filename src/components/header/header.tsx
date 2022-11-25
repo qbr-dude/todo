@@ -6,17 +6,12 @@ type Props = {}
 const Header = (props: Props) => {
     return (
         <header className={styles.header}>
-            <div className={styles.chunk}>
-                {/* Сделать через чанки */}
-                <span className={'header-chunk-piece'}>All projects / </span>
-                <span className={'header-chunk-piece'}>first</span>
-            </div>
+            <span className={styles.label}>TODO</span>
 
             <div>
-                <span>SEARCH</span>
+                <input type="text" placeholder='SEARCH' />
             </div>
 
-            <span className={styles.label}>TODO</span>
         </header>
     )
 }

@@ -1,0 +1,55 @@
+@import "./../../colors";
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 15px;
+    width: 100%;
+    height: 100px;
+    margin: 10px 20px;
+    border-radius: 5px;
+    color: $sub-general-color;
+    cursor: pointer;
+
+    &.queue {
+        background-color: $queue-color;
+    }
+
+    &.development {
+        background-color: $dev-color;
+    }
+
+    &.done {
+        background-color: $done-color;
+    }
+}
+
+.label {
+    display: block;
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.description {
+    display: block;
+    font-size: 16px;
+    margin-top: 5px;
+    word-break: break-all;
+}
+
+.modal-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba($sub-general-color, .4);
+    width: 100%;
+    height: 100%;
+
+    &.hidden {
+        display: none;
+    }
+
+    &.shown {
+        display: block;
+    }
+}
