@@ -1,32 +1,30 @@
 $queue-color: #F75990;
-$dev-color: #FFF685;
+$dev-color: #FDBC64;
 $done-color: #00DDFF;
-
-
-
 
 .stages {
     padding: 10px 25px;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
 
     @media (max-width: 1024px) {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 }
 
 .stage {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
     width: 32%;
-    height: 90vh;
+    // height: 90vh;
     max-height: 100vh;
     margin: 5px;
 
     @media (max-width: 1024px) {
         width: 100%;
-        height: 30vh;
+        // height: 30vh;
     }
 }
 
@@ -46,4 +44,25 @@ $done-color: #00DDFF;
     font-size: 30px;
     font-weight: bold;
     color: #51459E;
+}
+
+.task {
+    padding: 5px 10px;
+    width: 100%;
+    height: 100px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &-queue {
+        background-color: $queue-color;
+    }
+
+    &-dev {
+        background-color: $dev-color;
+    }
+
+    &-done {
+        background-color: $done-color;
+    }
 }
