@@ -2,7 +2,8 @@ import { Editor } from '@tinymce/tinymce-react';
 import React, { useRef, useCallback, memo, useEffect } from 'react'
 import { DraggableProvided } from 'react-beautiful-dnd';
 import { Editor as TinyMCEEditor } from 'tinymce';
-import { useAppDispatch } from '../../hooks/hooks';
+import { calculateTime } from '../../helpers';
+import { useAppDispatch, useEscaping } from '../../hooks/hooks';
 import { ModalViewActions } from '../../store/modalReducer';
 import { IClickHandler, IModalView, ITask } from '../../types/types';
 import Button from '../UI/button';
@@ -14,7 +15,7 @@ type SmallProps = {
     provided: DraggableProvided;
 }
 
-export const SmallTaskView = (props: SmallProps) => {
+export const SmallTaskView = React.memo((props: SmallProps) => {
 
     const dispatch = useAppDispatch();
 
@@ -42,7 +43,7 @@ export const SmallTaskView = (props: SmallProps) => {
             </div>
         </div>
     )
-}
+})
 
 type Props = {
     task: ITask | null;
@@ -53,34 +54,28 @@ export const ModalTaskView = memo((props: Props) => {
 
     const dispatch = useAppDispatch();
 
-    const escFunction = useCallback((event: KeyboardEvent) => {
-        if (event.key === "Escape") {
-            closeModal();
-        }
-    }, []);
-
-    useEffect(() => {
-        document.addEventListener("keydown", escFunction, false);
-
-        return () => {
-            document.removeEventListener("keydown", escFunction, false);
-        };
-    }, []);
-
     const descriptionRef = useRef<TinyMCEEditor | null>(null);
-    const log = () => {
-        if (descriptionRef.current) {
-            console.log(descriptionRef.current.getContent());
-        }
-    };
 
+    /**
+     * Закрытие модального окна
+     */
     const closeModal = () => {
         dispatch({ type: ModalViewActions.CHANGE_STATUS, payload: 'hidden' });
     }
 
+    useEscaping(closeModal);
+
+    /**
+     * Обработка нажатия мимо модального окна
+     * @param {React.MouseEvent<HTMLElement>} event 
+     */
     const handleOutModalClick: React.MouseEventHandler = (event: React.MouseEvent<HTMLElement>) => {
         if (event.target === event.currentTarget)
             closeModal();
+    }
+
+    const handleEditing = (str: string, editor: TinyMCEEditor) => {
+        // setEditorTimeout()
     }
 
     return (
@@ -113,14 +108,13 @@ export const ModalTaskView = memo((props: Props) => {
                                 toolbar: false,
                                 content_css: 'editor.scss',
                             }}
-                            onEditorChange={() => { }}
+                            onEditorChange={handleEditing}
                         />
-                        <button onClick={log}>Сохранить</button>
                     </div>
                 </div>
                 <div className={styles.info}>
                     <span className={styles.label}>Информация</span>
-                    <span>Время в работе: {props.task?.workingHours?.toDateString()}</span>
+                    <span>Время в работе: {calculateTime(props.task?.createDate!, new Date())}</span>
                     <span>Приоритет: {props.task?.priority}</span>
                     <span>Текущий статус: {props.task?.currentStatus?.toUpperCase()}</span>
                     <div className={styles.files}>

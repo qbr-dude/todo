@@ -9,6 +9,8 @@
 }
 
 .label {
+    cursor: pointer;
+    user-select: none;
     font-size: 26px;
     font-weight: bold;
 }

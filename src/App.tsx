@@ -8,14 +8,14 @@ import { store } from './store';
 function App() {
 	return (
 		<Provider store={store}>
-			<HelmetProvider>
-				<Header />
-				<main>
-					<BrowserRouter>
+			<BrowserRouter>
+				<HelmetProvider>
+					<Header />
+					<main>
 						<AppRouter />
-					</BrowserRouter>
-				</main>
-			</HelmetProvider>
+					</main>
+				</HelmetProvider>
+			</BrowserRouter>
 		</Provider>
 	);
 }

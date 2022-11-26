@@ -12,7 +12,7 @@ type Props = {
 // 2 типа рисовки у кнопки (основной и дополнительный)
 const getStyleClass = (type: string): string => (type && type === 'second') ? 'second' : 'main';
 
-const Button = (props: Props) => {
+const Button = React.memo((props: Props) => {
     return (
         <button
             className={`${styles.button} ${styles[getStyleClass(props.style!)]}`}
@@ -22,6 +22,6 @@ const Button = (props: Props) => {
             {props.children}
         </button>
     )
-}
+})
 
 export default Button

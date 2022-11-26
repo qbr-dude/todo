@@ -1,5 +1,6 @@
 import { DraggableLocation } from "react-beautiful-dnd";
 import { IMoveResult, ITask } from "../types/types";
+import { formatDistance } from 'date-fns';
 
 export const moveTask = (source: ITask[], destination: ITask[], droppableSource: DraggableLocation, droppableDestination: DraggableLocation): IMoveResult | any => {
     const sourceClone = [...source];
@@ -20,6 +21,13 @@ export const moveTask = (source: ITask[], destination: ITask[], droppableSource:
     return result;
 };
 
+/**
+ * Перестановка задачи внутри списка
+ * @param list 
+ * @param startIndex 
+ * @param endIndex 
+ * @returns 
+ */
 export const reorder = (list: ITask[], startIndex: number, endIndex: number): ITask[] => {
     const result = [...list];
     const [removed] = result.splice(startIndex, 1);
@@ -29,10 +37,20 @@ export const reorder = (list: ITask[], startIndex: number, endIndex: number): IT
 };
 
 export function capitalize(str: string) {
+    if (!str)
+        return str;
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+/**
+ * Получение свободного индекса. Для этого используется перебор индексов в массиве. Пропущенный индекс возращается, иначе выдается новый.
+ * @param {ITask} list 
+ * @returns new index
+ */
 export const getFreeListID = (list: ITask[]): number => {
+    if (list.length === 0)
+        return 0;
+
     const sorted = list.sort((a, b) => getNumberFromID(a.id) - getNumberFromID(b.id));
 
     if (getNumberFromID(sorted[0].id) !== 0) {
@@ -47,6 +65,26 @@ export const getFreeListID = (list: ITask[]): number => {
     return sorted.length;
 }
 
+/**
+ * Получение числа из строкового индекса
+ * @param {string} id 
+ * @returns 
+ */
 const getNumberFromID = (id: string): number => {
     return parseInt(id.split('-')[1]);
+}
+
+/**
+ * Разница времени. Использована для избежания ошибок при отсутствии знайчений параметров
+ * @param oldDate 
+ * @param currentDate 
+ * @returns 
+ */
+export const calculateTime = (oldDate: Date, currentDate: Date): string => {
+    if (!oldDate || !currentDate)
+        return '';
+
+    const difference = formatDistance(currentDate, oldDate, { includeSeconds: true });
+
+    return difference;
 }

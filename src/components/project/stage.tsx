@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Draggable, DraggableProvided, Droppable, DroppableProvided, DroppableStateSnapshot } from 'react-beautiful-dnd';
 import { capitalize } from '../../helpers';
 import { ITask } from '../../types/types';
@@ -10,7 +10,7 @@ type Props = {
     list: ITask[];
 }
 
-const Stage = (props: Props) => {
+const Stage = memo((props: Props) => {
 
     return (
         <Droppable droppableId={props.name} >
@@ -36,6 +36,6 @@ const Stage = (props: Props) => {
             )}
         </Droppable >
     )
-}
+})
 
 export default Stage

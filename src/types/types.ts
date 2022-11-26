@@ -38,6 +38,10 @@ export interface IClickHandler {
     (value?: any): void | undefined;
 }
 
+export interface ICallback {
+    (): void;
+}
+
 export interface IModalView {
     status: string;
     taskID?: string;

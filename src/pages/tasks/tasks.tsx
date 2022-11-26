@@ -48,14 +48,18 @@ const Tasks = (props: Props) => {
 
     // инициализация задач для текущего проекта
     useEffect(() => {
-        const initList: ITaskStateLists = {
-            queue: initQueueTasks,
-            development: initDevTasks,
-            done: initDoneTasks,
-        }
+        const json = localStorage.getItem(`stateLists-${id}`);
+        if (!json)
+            return;
+        let initList = JSON.parse(json) as ITaskStateLists;
 
         dispatch({ type: StateListsActions.UPDATE_FULL_STATE, payload: initList })
     }, [])
+
+    useEffect(() => {
+        localStorage.setItem(`stateLists-${id}`, JSON.stringify(stateLists));
+    }, [stateLists])
+
 
     /**
      * Получение определенной задачи из "общего" списка задач
@@ -118,7 +122,6 @@ const Tasks = (props: Props) => {
         }
 
     }
-
 
     /**
      * Обработка нажатия кнопки добавления новой задачи
