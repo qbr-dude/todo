@@ -4,6 +4,7 @@
     border: 0;
     border-radius: 5px;
     padding: 10px 15px;
+    margin: 10px;
     font-size: $pc-font-sub;
     cursor: pointer;
 
@@ -28,6 +29,15 @@
         &:active {
             background-color: rgba($general-color, .1);
             color: $general-color;
+        }
+    }
+
+    &.exit {
+        background-color: $danger-color;
+        color: $general-color;
+
+        &:hover {
+            background-color: rgba($danger-color, .8);
         }
     }
 

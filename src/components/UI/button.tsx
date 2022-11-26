@@ -10,7 +10,7 @@ type Props = {
 }
 
 // 2 типа рисовки у кнопки (основной и дополнительный)
-const getStyleClass = (type: string): string => (type && type === 'second') ? 'second' : 'main';
+const getStyleClass = (type: string): string => (type) ? type : 'main';
 
 const Button = React.memo((props: Props) => {
     return (

@@ -5,6 +5,7 @@ export const StateListsActions = {
     UPDATE_DEVELOPMENT: 'UPDATE_DEVELOPMENT',
     UPDATE_DONE: 'UPDATE_DONE',
     UPDATE_FULL_STATE: 'UPDATE_FULL_STATE',
+    CLEAR_STATE: 'CLEAR_STATE',
 }
 
 const initStateLists: ITaskStateLists = {
@@ -23,6 +24,9 @@ const stateListsReducer = (state = initStateLists, action: IAction): ITaskStateL
             return { ...state, done: action.payload };
         case StateListsActions.UPDATE_FULL_STATE:
             return { ...action.payload };
+        case StateListsActions.CLEAR_STATE:
+            return initStateLists;
+
 
         default:
             return state;

@@ -1,8 +1,13 @@
+export interface IProject {
+    id: number;
+    name: string;
+}
+
 export interface ITask {
     id: string;
     heading: string;
     description?: string;
-    createDate?: Date;
+    createDate?: number;
     workingHours?: Date;
     endDate?: Date;
     priority?: string;

@@ -122,10 +122,11 @@ export const ModalTaskView = memo((props: Props) => {
                     </div>
                 </div>
                 <div className={styles.buttons}>
-                    <Button
-                        style='second'
-                        handler={closeModal}>
-                        Close
+                    <Button style='second' handler={() => { }}>
+                        Принять изменения
+                    </Button>
+                    <Button style='exit' handler={closeModal}>
+                        Закрыть
                     </Button>
                 </div>
             </div>

@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Helmet } from 'react-helmet-async';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styles from './tasks.module.scss';
-import { IMoveResult, ITask, ITaskStateLists } from '../../types/types';
+import { IMoveResult, IProject, ITask, ITaskStateLists } from '../../types/types';
 import { getFreeListID, moveTask, reorder } from '../../helpers';
 import Stage from '../../components/project/stage';
 import { ModalTaskView } from '../../components/project/task';
@@ -11,25 +11,6 @@ import { StateListsActions } from '../../store/stateListsReducer';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import Button from '../../components/UI/button';
 import { ModalViewActions } from '../../store/modalReducer';
-
-const initQueueTasks: ITask[] = [
-    { id: "queue-0", heading: 'Some', currentStatus: 'queue' },
-    { id: "queue-1", heading: 'Some', currentStatus: 'queue' },
-    { id: "queue-2", heading: 'Some', currentStatus: 'queue' },
-    { id: "queue-3", heading: 'Some', currentStatus: 'queue' },
-]
-const initDevTasks: ITask[] = [
-    { id: "development-0", heading: 'soMe', currentStatus: 'development' },
-    { id: "development-1", heading: 'soMe', currentStatus: 'development' },
-    { id: "development-2", heading: 'soMe', currentStatus: 'development' },
-    { id: "development-3", heading: 'soMe', currentStatus: 'development' },
-]
-const initDoneTasks: ITask[] = [
-    { id: "done-0", heading: 'somE', currentStatus: 'done' },
-    { id: "done-1", heading: 'somE', currentStatus: 'done' },
-    { id: "done-2", heading: 'somE', currentStatus: 'done' },
-    { id: "done-3", heading: 'somE', currentStatus: 'done' },
-]
 
 const getGeneralTaskCount = (list: ITaskStateLists): number => {
     if (list)
@@ -42,15 +23,28 @@ type Props = {}
 const Tasks = (props: Props) => {
 
     const { id } = useParams();
+    const [projectName, setProjectName] = useState('')
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const stateLists = useAppSelector(state => state.stateListsR);
     const modalProps = useAppSelector(state => state.modalR);
 
     // инициализация задач для текущего проекта
     useEffect(() => {
+        // обнуление стейта
+        dispatch({ type: StateListsActions.CLEAR_STATE, payload: {} });
+        dispatch({ type: ModalViewActions.CLEAR_STATE, payload: {} });
+
+        // Получение названия проекта
+        // Не могу точно определиться с корректностью, неохота хранить весь массив проектов (получив его из ReduxStore)
+        const projects: IProject[] = JSON.parse(localStorage.projects);
+        setProjectName(projects.find(project => project.id === parseInt(id!))?.name!);
+
         const json = localStorage.getItem(`stateLists-${id}`);
+
         if (!json)
             return;
+
         let initList = JSON.parse(json) as ITaskStateLists;
 
         dispatch({ type: StateListsActions.UPDATE_FULL_STATE, payload: initList })
@@ -132,7 +126,7 @@ const Tasks = (props: Props) => {
             heading: 'Новая задача',
             priority: 'Не задан',
             currentStatus: 'queue',
-            createDate: new Date(),
+            createDate: Date.now(),
             description: 'Вы можете добавить описание здесь',
             comments: [],
         }
@@ -152,12 +146,17 @@ const Tasks = (props: Props) => {
             </Helmet>
             <div className={styles.header}>
                 <div className={styles.naming}>
-                    <span>Project №{id}</span>
+                    <span>{projectName} (№{id})</span>
                     <span>Количество задач: {getGeneralTaskCount(stateLists)}</span>
                 </div>
-                <Button handler={handleAddNewTask}>
-                    Добавить новую задачу
-                </Button>
+                <div>
+                    <Button handler={handleAddNewTask}>
+                        Добавить новую задачу
+                    </Button>
+                    <Button handler={() => navigate('/projects')} style='exit'>
+                        Назад к проектам
+                    </Button>
+                </div>
             </div>
             <DragDropContext onDragEnd={onDragEnd}>
                 <div className={styles.stages}>

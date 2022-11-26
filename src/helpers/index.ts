@@ -75,12 +75,12 @@ const getNumberFromID = (id: string): number => {
 }
 
 /**
- * Разница времени. Использована для избежания ошибок при отсутствии знайчений параметров
+ * Разница времени. Написана для избежания ошибок при отсутствии знайчений параметров
  * @param oldDate 
  * @param currentDate 
  * @returns 
  */
-export const calculateTime = (oldDate: Date, currentDate: Date): string => {
+export const calculateTime = (oldDate: Date | number, currentDate: Date | number): string => {
     if (!oldDate || !currentDate)
         return '';
 

@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './projects.module.scss';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+import { ProjectActions } from '../../store/projectsReducer';
+import { IProject } from '../../types/types';
 
 type Props = {}
 
-const projects = [
-    { id: 1, name: 'Some Name', tasks: 10 },
-    { id: 2, name: 'Some Name', tasks: 10 },
-    { id: 3, name: 'Some Name', tasks: 10 },
-    { id: 4, name: 'Some Name', tasks: 10 },
-    { id: 5, name: 'Some Name', tasks: 10 },
+const initProjects = [
+    { id: 1, name: 'Some Name' },
+    { id: 2, name: 'Some Name' },
+    { id: 3, name: 'Some Name' },
+    { id: 4, name: 'Some Name' },
+    { id: 5, name: 'Some Name' },
 ]
 
 /**
@@ -19,6 +22,26 @@ const projects = [
 const Projects = (props: Props) => {
     const navigate = useNavigate();
 
+    const dispatch = useAppDispatch();
+    const projects = useAppSelector(state => state.projectsR);
+
+    useEffect(() => {
+        // TODO если нужно будет делать создание проектов
+        // const json = localStorage.getItem(`projects`);
+        // if (!json)
+        //     return;
+        // let initList = JSON.parse(json) as IProject[];
+
+        dispatch({ type: ProjectActions.INIT_PROJECTS, payload: initProjects });
+    }, [])
+
+    // см. TODO выше
+    useEffect(() => {
+        localStorage.setItem(`projects`, JSON.stringify(projects));
+    }, [projects])
+
+
+
     return (
         <div className={styles.list}>
             {projects.map(project =>
@@ -27,7 +50,7 @@ const Projects = (props: Props) => {
                     onClick={() => navigate(`/projects/${project.id}`)}>
                     <span className={styles.name}>{project.name}</span>
                     <div className={styles.info}>
-                        <span>Текущих задач: {project.tasks}</span>
+                        <span>Текущих задач: {0}</span>
                         <span>Комментариев: 0</span>
                     </div>
                 </div>
