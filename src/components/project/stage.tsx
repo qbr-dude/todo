@@ -28,7 +28,6 @@ const Stage = (props: Props) => {
                                     task={task}
                                     provided={providedDraggable}
                                     state={props.name}
-                                    clickHandler={() => { }}
                                 />
                             )}
                         </Draggable>)}

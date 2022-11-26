@@ -1,7 +1,13 @@
-import { createStore } from 'redux';
+import { combineReducers, createStore } from 'redux';
+import { modalReducer } from './modalReducer';
 import stateListsReducer from './stateListsReducer';
 
-export const store = createStore(stateListsReducer);
+const rootReducer = combineReducers({
+    stateListsR: stateListsReducer,
+    modalR: modalReducer,
+})
+
+export const store = createStore(rootReducer);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

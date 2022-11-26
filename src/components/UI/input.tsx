@@ -3,8 +3,17 @@ import React from 'react'
 type Props = {}
 
 const Input = (props: Props) => {
+
+    const handleChange = () => {
+
+    }
+
     return (
-        <div>Input</div>
+        <input
+            className={''}
+            type="text"
+            onChange={handleChange}
+        />
     )
 }
 

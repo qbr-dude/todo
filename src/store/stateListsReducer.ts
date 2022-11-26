@@ -1,6 +1,6 @@
 import { IAction, ITaskStateLists } from "../types/types"
 
-export const actionTypes = {
+export const StateListsActions = {
     UPDATE_QUEUE: 'UPDATE_QUEUE',
     UPDATE_DEVELOPMENT: 'UPDATE_DEVELOPMENT',
     UPDATE_DONE: 'UPDATE_DONE',
@@ -15,13 +15,13 @@ const initStateLists: ITaskStateLists = {
 
 const stateListsReducer = (state = initStateLists, action: IAction): ITaskStateLists => {
     switch (action.type) {
-        case actionTypes.UPDATE_QUEUE:
+        case StateListsActions.UPDATE_QUEUE:
             return { ...state, queue: action.payload };
-        case actionTypes.UPDATE_DEVELOPMENT:
+        case StateListsActions.UPDATE_DEVELOPMENT:
             return { ...state, development: action.payload };
-        case actionTypes.UPDATE_DONE:
+        case StateListsActions.UPDATE_DONE:
             return { ...state, done: action.payload };
-        case actionTypes.UPDATE_FULL_STATE:
+        case StateListsActions.UPDATE_FULL_STATE:
             return { ...action.payload };
 
         default:

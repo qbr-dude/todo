@@ -1,4 +1,4 @@
-@import "./../../colors";
+@import "./../../base";
 
 .stages {
     padding: 10px 25px;
@@ -19,6 +19,7 @@
     height: fit-content;
     margin: 5px;
     user-select: none;
+    border-radius: 5px;
 
     @media (max-width: 1024px) {
         width: 100%;
@@ -41,7 +42,7 @@
     display: inline-block;
     width: 100%;
     text-align: center;
-    font-size: 30px;
+    font-size: $pc-font-general;
     padding: 10px 0;
     font-weight: bold;
     color: #51459E;
@@ -49,6 +50,7 @@
 
 .header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 10px 25px;
 }
@@ -63,7 +65,7 @@
     }
 
     span:first-child {
-        font-size: 30px;
+        font-size: $pc-font-general;
         font-weight: bold;
     }
 }
