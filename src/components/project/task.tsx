@@ -1,12 +1,14 @@
 import { Editor } from '@tinymce/tinymce-react';
-import React, { useRef, useCallback, memo, useEffect } from 'react'
+import React, { useRef, useState, memo, useEffect } from 'react'
 import { DraggableProvided } from 'react-beautiful-dnd';
 import { Editor as TinyMCEEditor } from 'tinymce';
-import { calculateTime } from '../../helpers';
+import { calculateTime, getFormatedDate } from '../../helpers';
 import { useAppDispatch, useEscaping } from '../../hooks/hooks';
 import { ModalViewActions } from '../../store/modalReducer';
+import { StateListsActions } from '../../store/stateListsReducer';
 import { IClickHandler, IModalView, ITask } from '../../types/types';
 import Button from '../UI/button';
+import Comment from './comment';
 import styles from './task.module.scss';
 
 type SmallProps = {
@@ -53,6 +55,7 @@ type Props = {
 export const ModalTaskView = memo((props: Props) => {
 
     const dispatch = useAppDispatch();
+    const [hasChanges, setHasChanges] = useState(false)
 
     const descriptionRef = useRef<TinyMCEEditor | null>(null);
 
@@ -60,6 +63,7 @@ export const ModalTaskView = memo((props: Props) => {
      * Закрытие модального окна
      */
     const closeModal = () => {
+        // setHasChanges(false);
         dispatch({ type: ModalViewActions.CHANGE_STATUS, payload: 'hidden' });
     }
 
@@ -75,7 +79,21 @@ export const ModalTaskView = memo((props: Props) => {
     }
 
     const handleEditing = (str: string, editor: TinyMCEEditor) => {
-        // setEditorTimeout()
+        if (str !== props.task?.description)
+            setHasChanges(true);
+        else
+            setHasChanges(false);
+    }
+
+    const handleEditEnd = () => {
+        if (descriptionRef.current) {
+            console.log(descriptionRef.current.getContent());
+            const newTask = props.task!;
+            newTask.description = descriptionRef.current.getContent();
+
+            dispatch({ type: StateListsActions.UPDATE_STATE_LIST, payload: newTask });
+            setHasChanges(false);
+        }
     }
 
     return (
@@ -87,29 +105,40 @@ export const ModalTaskView = memo((props: Props) => {
                 <div className={styles.text}>
                     <span className={styles.heading}>{props.task?.heading}</span>
                     <br />
-                    <span className={styles.date}>(дата1 - дата2)</span>
-                    <div className={styles.description}>
-                        <span>Описание</span>
-                        <Editor
-                            apiKey='q86eiw12h8war83jo0kmq6cncj0ugr4xe5kudhhx8b4w7zmx'
-                            onInit={(evt, editor) => descriptionRef.current = editor}
-                            initialValue={props.task?.description}
-                            init={{
-                                statusbar: false,
-                                min_height: 200,
-                                height: 200,
-                                width: '100%',
-                                menubar: false,
-                                plugins: [
-                                    'advlist autolink lists link image charmap print preview anchor',
-                                    'searchreplace visualblocks code fullscreen',
-                                    'insertdatetime media table paste code help wordcount'
-                                ],
-                                toolbar: false,
-                                content_css: 'editor.scss',
-                            }}
-                            onEditorChange={handleEditing}
-                        />
+                    <span className={styles.date}>({getFormatedDate(props.task?.createDate!)} - дата2)</span>
+                    <div className={styles['sub-text']}>
+                        <div className={styles.description}>
+                            <span className={styles.label}>Описание</span>
+                            <Editor
+                                apiKey='q86eiw12h8war83jo0kmq6cncj0ugr4xe5kudhhx8b4w7zmx'
+                                onInit={(evt, editor) => descriptionRef.current = editor}
+                                initialValue={props.task?.description}
+                                init={{
+                                    statusbar: false,
+                                    min_height: 200,
+                                    height: 200,
+                                    width: '100%',
+                                    menubar: false,
+                                    plugins: [
+                                        'advlist autolink lists link image charmap print preview anchor',
+                                        'searchreplace visualblocks code fullscreen',
+                                        'insertdatetime media table paste code help wordcount'
+                                    ],
+                                    toolbar: false,
+                                    content_style: '* {color: #51459E; font-size: 18px}'
+                                }}
+                                onEditorChange={handleEditing}
+                            />
+                        </div>
+                        <div className={styles.subtasks}>
+                            <span className={styles.label}>Подзадачи</span>
+                        </div>
+                    </div>
+                    <div className={styles['comment-area']}>
+                        <span className={styles.label}>Комментарии</span>
+                        <div className={styles.comments}>
+                            <Comment comment={{ id: 0, taskID: props.task?.id!, date: Date.now(), text: 'Новый комментарий' }} />
+                        </div>
                     </div>
                 </div>
                 <div className={styles.info}>
@@ -122,7 +151,7 @@ export const ModalTaskView = memo((props: Props) => {
                     </div>
                 </div>
                 <div className={styles.buttons}>
-                    <Button style='second' handler={() => { }}>
+                    <Button style='second' handler={handleEditEnd} disabled={!hasChanges}>
                         Принять изменения
                     </Button>
                     <Button style='exit' handler={closeModal}>

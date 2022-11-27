@@ -32,11 +32,12 @@
     display: block;
     font-size: $pc-font-general;
     font-weight: 500;
+    margin-bottom: 15px;
 }
 
 .small-description {
     display: block;
-    font-size: $pc-font-sub;
+    font-size: $pc-font-min;
     margin-top: 5px;
     word-break: keep-all;
 }
@@ -79,6 +80,10 @@
     flex: 1 0 0;
     padding: 0 25px;
     width: auto;
+
+    .label {
+        text-indent: 25px;
+    }
 }
 
 .info {
@@ -89,7 +94,7 @@
     user-select: none;
 
     span:not(:first-child) {
-        font-size: $pc-font-sub;
+        font-size: $pc-font-min;
         margin: 10px 0;
     }
 
@@ -104,14 +109,23 @@
     font-weight: 500;
 }
 
-.description {
+.sub-text {
+    display: flex;
     margin-top: 10px;
-    word-break: keep-all;
-    text-indent: 25px;
 
-    span {
-        font-size: $pc-font-sub;
+    @media (max-width: 1024px) {
+        flex-direction: column;
     }
+}
+
+.description {
+    flex: 1 0 0;
+    word-break: keep-all;
+}
+
+.subtasks {
+    flex: 1 0 0;
+    padding: 0 25px 10px;
 }
 
 .date {
@@ -123,4 +137,13 @@
     position: absolute;
     bottom: 25px;
     right: 25px;
+}
+
+.comment-area {
+    margin-top: 20px;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
 }

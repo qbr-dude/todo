@@ -7,6 +7,7 @@ type Props = {
     children: React.ReactNode;
     value?: string;
     style?: string;
+    disabled?: boolean;
 }
 
 // 2 типа рисовки у кнопки (основной и дополнительный)
@@ -18,6 +19,7 @@ const Button = React.memo((props: Props) => {
             className={`${styles.button} ${styles[getStyleClass(props.style!)]}`}
             value={props.value}
             onClick={props.handler}
+            disabled={props.disabled}
         >
             {props.children}
         </button>

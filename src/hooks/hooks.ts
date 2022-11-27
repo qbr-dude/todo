@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { ICallback } from '../types/types';
 import type { RootState, AppDispatch } from './../store';
@@ -24,4 +24,30 @@ export const useEscaping = (callback: ICallback) => {
             document.removeEventListener("keydown", escFunction, false);
         };
     }, []);
+}
+
+/**
+ * Работа с записью в sessionStorage
+ * @param key 
+ * @param defaultValue 
+ * @returns 
+ */
+export const useSessionStorage = (key: string, defaultValue?: any) => {
+
+    const getStorageValue = (_key: string): typeof defaultValue => {
+        const json = sessionStorage.getItem(_key);
+
+        if (json === null || json === 'undefined') // idk почему undefined - строка в json
+            return defaultValue;
+        else
+            return JSON.parse(json);
+    }
+
+    const [value, setValue] = useState(() => getStorageValue(key));
+
+    useEffect(() => {
+        sessionStorage.setItem(key, JSON.stringify(value));
+    }, [value])
+
+    return [value, setValue];
 }

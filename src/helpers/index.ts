@@ -1,7 +1,15 @@
 import { DraggableLocation } from "react-beautiful-dnd";
-import { IMoveResult, ITask } from "../types/types";
-import { formatDistance } from 'date-fns';
+import { IMoveResult, ITask, ITaskStateLists } from "../types/types";
+import { format, formatDistance, toDate } from 'date-fns';
 
+/**
+ * Перемещение задач между списками. У перемещенной задачи также обновляется ID и статус
+ * @param source 
+ * @param destination 
+ * @param droppableSource 
+ * @param droppableDestination 
+ * @returns 
+ */
 export const moveTask = (source: ITask[], destination: ITask[], droppableSource: DraggableLocation, droppableDestination: DraggableLocation): IMoveResult | any => {
     const sourceClone = [...source];
     const destClone = [...destination];
@@ -87,4 +95,27 @@ export const calculateTime = (oldDate: Date | number, currentDate: Date | number
     const difference = formatDistance(currentDate, oldDate, { includeSeconds: true });
 
     return difference;
+}
+
+/**
+ * Получение форматированной строки времени
+ * @param date 
+ * @returns 
+ */
+export const getFormatedDate = (date: Date | number): string => {
+    if (!date)
+        return '';
+
+    return format(toDate(date), 'd MMM y');
+}
+
+/**
+ * Получение общего количества задач всех стадий
+ * @param list 
+ * @returns 
+ */
+export const getGeneralTaskCount = (list: ITaskStateLists): number => {
+    if (list)
+        return list.queue.length + list.development.length + list.done.length;
+    return 0;
 }

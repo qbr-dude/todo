@@ -13,23 +13,46 @@
     max-width: 944px;
     margin: 10px;
     padding: 25px 30px;
-    background-color: #F6F5FF;
+    background-color: rgba($color: $sub-general-color, $alpha: .2);
     color: $sub-general-color;
+    border-radius: 5px;
 
     transition: all .2s;
 
     &:hover {
         cursor: pointer;
-        background-color: rgba(56, 52, 169, 0.3);
+        background-color: rgba($sub-general-color, 0.4);
     }
 }
 
 .name {
-    font-size: 26px;
+    font-size: $pc-font-general;
     font-weight: bold;
 }
 
 .info {
     display: flex;
     flex-direction: column;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 25px;
+}
+
+.naming {
+    display: flex;
+    flex-direction: column;
+    color: $sub-general-color;
+}
+
+.label {
+    font-size: $pc-font-general;
+    font-weight: bold;
+}
+
+.sublabel {
+    font-size: $pc-font-sub;
 }

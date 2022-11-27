@@ -4,19 +4,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styles from './tasks.module.scss';
 import { IMoveResult, IProject, ITask, ITaskStateLists } from '../../types/types';
-import { getFreeListID, moveTask, reorder } from '../../helpers';
+import { getFreeListID, getGeneralTaskCount, moveTask, reorder } from '../../helpers';
 import Stage from '../../components/project/stage';
 import { ModalTaskView } from '../../components/project/task';
 import { StateListsActions } from '../../store/stateListsReducer';
-import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+import { useAppDispatch, useAppSelector, useSessionStorage } from '../../hooks/hooks';
 import Button from '../../components/UI/button';
 import { ModalViewActions } from '../../store/modalReducer';
-
-const getGeneralTaskCount = (list: ITaskStateLists): number => {
-    if (list)
-        return list.queue.length + list.development.length + list.done.length;
-    return 0;
-}
+import { ProjectActions } from '../../store/projectsReducer';
 
 type Props = {}
 
@@ -28,6 +23,7 @@ const Tasks = (props: Props) => {
     const dispatch = useAppDispatch();
     const stateLists = useAppSelector(state => state.stateListsR);
     const modalProps = useAppSelector(state => state.modalR);
+    const [storedLists, setStoredLists] = useSessionStorage(`stateLists-${id}`);
 
     // инициализация задач для текущего проекта
     useEffect(() => {
@@ -37,21 +33,17 @@ const Tasks = (props: Props) => {
 
         // Получение названия проекта
         // Не могу точно определиться с корректностью, неохота хранить весь массив проектов (получив его из ReduxStore)
-        const projects: IProject[] = JSON.parse(localStorage.projects);
+        const projects: IProject[] = JSON.parse(sessionStorage.projects);
         setProjectName(projects.find(project => project.id === parseInt(id!))?.name!);
 
-        const json = localStorage.getItem(`stateLists-${id}`);
-
-        if (!json)
+        if (!storedLists || storedLists.length === 0)
             return;
 
-        let initList = JSON.parse(json) as ITaskStateLists;
-
-        dispatch({ type: StateListsActions.UPDATE_FULL_STATE, payload: initList })
+        dispatch({ type: StateListsActions.UPDATE_FULL_STATE, payload: storedLists as ITaskStateLists })
     }, [])
 
     useEffect(() => {
-        localStorage.setItem(`stateLists-${id}`, JSON.stringify(stateLists));
+        setStoredLists(stateLists);
     }, [stateLists])
 
 
@@ -135,8 +127,10 @@ const Tasks = (props: Props) => {
             taskID: newTask.id,
             stateID: 'queue',
         }
+
         dispatch({ type: ModalViewActions.CHANGE_FULL, payload: _modalProps });
         dispatch({ type: StateListsActions.UPDATE_QUEUE, payload: [...stateLists.queue, newTask] });
+        dispatch({ type: ProjectActions.INCREMENT_COUNTER, payload: parseInt(id!) });
     }
 
     return (

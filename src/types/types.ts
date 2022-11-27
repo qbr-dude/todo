@@ -1,6 +1,7 @@
 export interface IProject {
     id: number;
     name: string;
+    tasksCount: number;
 }
 
 export interface ITask {
@@ -18,6 +19,7 @@ export interface ITask {
 export interface ITaskComment {
     id: number;
     taskID: string;
+    date: Date | number;
     text: string;
 }
 
