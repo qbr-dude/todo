@@ -8,6 +8,7 @@ import { ModalViewActions } from '../../store/modalReducer';
 import { StateListsActions } from '../../store/stateListsReducer';
 import { IClickHandler, IModalView, ITask } from '../../types/types';
 import Button from '../UI/button';
+import Input from '../UI/input';
 import Comment from './comment';
 import styles from './task.module.scss';
 
@@ -78,13 +79,24 @@ export const ModalTaskView = memo((props: Props) => {
             closeModal();
     }
 
+    /**
+     * Обработка начала редактирования. // TODO сделать для всех позиций ITask
+     * @param str 
+     * @param editor 
+     */
     const handleEditing = (str: string, editor: TinyMCEEditor) => {
-        if (str !== props.task?.description)
+        // Удаление тегов из строки
+        const item = str.replace(/<(.|\n)*?>/g, '');
+
+        if (item !== props.task?.description)
             setHasChanges(true);
         else
             setHasChanges(false);
     }
 
+    /**
+     * Применение и запись результатов изменения в Redux
+     */
     const handleEditEnd = () => {
         if (descriptionRef.current) {
             console.log(descriptionRef.current.getContent());
@@ -103,8 +115,9 @@ export const ModalTaskView = memo((props: Props) => {
         >
             <div className={styles.task} id={props.task?.id}>
                 <div className={styles.text}>
-                    <span className={styles.heading}>{props.task?.heading}</span>
-                    <br />
+                    <div className={styles.heading}>
+                        <Input value={props.task?.heading!} type='second' style={{ fontSize: '35px' }} />
+                    </div>
                     <span className={styles.date}>({getFormatedDate(props.task?.createDate!)} - дата2)</span>
                     <div className={styles['sub-text']}>
                         <div className={styles.description}>

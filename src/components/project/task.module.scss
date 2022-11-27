@@ -12,20 +12,33 @@
     cursor: pointer;
 
     &.queue {
-        background-color: $queue-color;
+        background-color: rgba($queue-color, .8);
+
+        &:hover {
+            background-color: $queue-color;
+        }
     }
 
     &.development {
-        background-color: $dev-color;
+        background-color: rgba($dev-color, .8);
+
+        &:hover {
+            background-color: $dev-color;
+        }
     }
 
     &.done {
-        background-color: $done-color;
+        background-color: rgba($done-color, .8);
+
+        &:hover {
+            background-color: $done-color;
+        }
     }
 
     span {
         margin: 0 10px;
     }
+
 }
 
 .label {
@@ -104,8 +117,7 @@
 }
 
 .heading {
-    margin-left: 25px;
-    font-size: $pc-font-general + 5px;
+    margin-left: 20px;
     font-weight: 500;
 }
 
@@ -129,7 +141,7 @@
 }
 
 .date {
-    margin-left: 25px;
+    margin-left: 30px;
     user-select: none;
 }
 

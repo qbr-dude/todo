@@ -1,5 +1,7 @@
 @import './../../base';
 
+
+// BUTTON
 .button {
     border: 0;
     border-radius: 5px;
@@ -47,6 +49,36 @@
 
         &:hover {
             background-color: rgba($general-color, .6);
+        }
+    }
+}
+
+// INPUT
+
+.input {
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 5px;
+    font-size: $pc-font-min;
+
+    &.main {
+        outline: 1px solid $sub-general-color;
+        background-color: $general-color;
+
+        &:focus {
+            outline-width: 2px;
+            background-color: rgba($sub-general-color, .2);
+        }
+    }
+
+    &.second {
+        color: $general-color;
+        background-color: $sub-general-color;
+
+        &:focus {
+            color: $sub-general-color;
+            outline: none;
+            background-color: $general-color;
         }
     }
 }
