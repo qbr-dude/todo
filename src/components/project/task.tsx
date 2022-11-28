@@ -18,7 +18,7 @@ type SmallProps = {
     provided: DraggableProvided;
 }
 
-export const SmallTaskView = React.memo((props: SmallProps) => {
+export const SmallTaskView = (props: SmallProps) => {
 
     const dispatch = useAppDispatch();
 
@@ -46,7 +46,7 @@ export const SmallTaskView = React.memo((props: SmallProps) => {
             </div>
         </div>
     )
-})
+}
 
 type Props = {
     task: ITask | null;
@@ -58,7 +58,9 @@ export const ModalTaskView = memo((props: Props) => {
     const dispatch = useAppDispatch();
     const [hasChanges, setHasChanges] = useState(false)
 
+    const taskNameRef = React.createRef<HTMLInputElement>();
     const descriptionRef = useRef<TinyMCEEditor | null>(null);
+    const priorityRef = React.createRef<HTMLInputElement>();
 
     /**
      * Закрытие модального окна
@@ -82,30 +84,42 @@ export const ModalTaskView = memo((props: Props) => {
     /**
      * Обработка начала редактирования. // TODO сделать для всех позиций ITask
      * @param str 
-     * @param editor 
      */
-    const handleEditing = (str: string, editor: TinyMCEEditor) => {
+    const handleEditing = (str: string) => {
         // Удаление тегов из строки
         const item = str.replace(/<(.|\n)*?>/g, '');
 
-        if (item !== props.task?.description)
-            setHasChanges(true);
-        else
-            setHasChanges(false);
+        // FIXME обработка description, сделать для всех
+        // if (item !== props.task?.description)
+        //     setHasChanges(true);
+        // else
+        //     setHasChanges(false);
+
+        console.log(str);
+
+
+        setHasChanges(true);
     }
 
     /**
      * Применение и запись результатов изменения в Redux
+     * //TODO добавить ли валидацию на изменение исходных данных?
      */
     const handleEditEnd = () => {
-        if (descriptionRef.current) {
-            console.log(descriptionRef.current.getContent());
-            const newTask = props.task!;
-            newTask.description = descriptionRef.current.getContent();
+        const newTask = { ...props.task! };
 
-            dispatch({ type: StateListsActions.UPDATE_STATE_LIST, payload: newTask });
-            setHasChanges(false);
+        if (taskNameRef.current) {
+            newTask.heading = taskNameRef.current.value;
         }
+        if (priorityRef.current) {
+            newTask.priority = priorityRef.current.value;
+        }
+        if (descriptionRef.current) {
+            newTask.description = descriptionRef.current.getContent();
+        }
+
+        dispatch({ type: StateListsActions.UPDATE_STATE_LIST, payload: newTask });
+        setHasChanges(false);
     }
 
     return (
@@ -116,7 +130,13 @@ export const ModalTaskView = memo((props: Props) => {
             <div className={styles.task} id={props.task?.id}>
                 <div className={styles.text}>
                     <div className={styles.heading}>
-                        <Input value={props.task?.heading!} type='second' style={{ fontSize: '35px' }} />
+                        <Input
+                            value={props.task?.heading!}
+                            type='second'
+                            style={{ fontSize: '35px' }}
+                            inputRef={taskNameRef}
+                            onEdit={handleEditing}
+                        />
                     </div>
                     <span className={styles.date}>({getFormatedDate(props.task?.createDate!)} - дата2)</span>
                     <div className={styles['sub-text']}>
@@ -156,9 +176,17 @@ export const ModalTaskView = memo((props: Props) => {
                 </div>
                 <div className={styles.info}>
                     <span className={styles.label}>Информация</span>
-                    <span>Время в работе: {calculateTime(props.task?.createDate!, new Date())}</span>
-                    <span>Приоритет: {props.task?.priority}</span>
-                    <span>Текущий статус: {props.task?.currentStatus?.toUpperCase()}</span>
+                    <span className={styles['info-item']}>Время в работе: {calculateTime(props.task?.createDate!, new Date())}</span>
+                    <span className={styles['info-item']}>
+                        Приоритет:
+                        {<Input
+                            type='second'
+                            value={props.task?.priority}
+                            inputRef={priorityRef}
+                            onEdit={handleEditing}
+                        />}
+                    </span>
+                    <span className={styles['info-item']}>Текущий статус: {props.task?.currentStatus?.toUpperCase()}</span>
                     <div className={styles.files}>
                         <span className={styles.label}>Вложенные файлы</span>
                     </div>

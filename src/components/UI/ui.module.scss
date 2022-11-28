@@ -57,6 +57,7 @@
 
 .input {
     padding: 7px 10px;
+    margin: 0 5px;
     border: 0;
     border-radius: 5px;
     font-size: $pc-font-min;
@@ -74,6 +75,10 @@
     &.second {
         color: $general-color;
         background-color: $sub-general-color;
+
+        &:hover {
+            background-color: rgba($general-color, .1);
+        }
 
         &:focus {
             color: $sub-general-color;

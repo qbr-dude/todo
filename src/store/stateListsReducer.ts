@@ -32,6 +32,8 @@ const stateListsReducer = (state = initStateLists, action: IAction): ITaskStateL
             const index = stateToUpdate.findIndex(task => task.id === action.payload.id);
             stateToUpdate[index] = newTask;
             newList[action.payload.currentStatus as keyof typeof newList] = stateToUpdate;
+            console.log(newList);
+
             return { ...newList };
         case StateListsActions.CLEAR_STATE:
             return initStateLists;

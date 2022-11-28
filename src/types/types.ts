@@ -9,7 +9,6 @@ export interface ITask {
     heading: string;
     description?: string;
     createDate?: number;
-    workingHours?: Date;
     endDate?: Date;
     priority?: string;
     currentStatus?: string;
@@ -42,6 +41,9 @@ export interface IAction {
 }
 
 export interface IClickHandler {
+    (value?: any): void | undefined;
+}
+export interface IEditHandler {
     (value?: any): void | undefined;
 }
 

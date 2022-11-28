@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useCallback } from 'react'
 import { Draggable, DraggableProvided, Droppable, DroppableProvided, DroppableStateSnapshot } from 'react-beautiful-dnd';
 import { capitalize } from '../../helpers';
 import { ITask } from '../../types/types';
@@ -10,7 +10,20 @@ type Props = {
     list: ITask[];
 }
 
-const Stage = memo((props: Props) => {
+const Stage = (props: Props) => {
+
+    /**
+     * Отдельный рендер, иначе не обновляются значения после изменений в модалке
+     */
+    const renderSmallTaskView = useCallback((task: ITask, providedDraggable: DraggableProvided) => {
+        return (
+            <SmallTaskView
+                task={task}
+                provided={providedDraggable}
+                state={props.name}
+            />
+        )
+    }, [props.list]);
 
     return (
         <Droppable droppableId={props.name} >
@@ -22,13 +35,9 @@ const Stage = memo((props: Props) => {
                 >
                     <span className={styles.label}>{capitalize(props.name)}</span>
                     {props.list.map((task, index) =>
-                        <Draggable key={task.id} draggableId={task.id} index={index}>
+                        <Draggable key={task.id} draggableId={task.id} index={index} >
                             {(providedDraggable: DraggableProvided) => (
-                                <SmallTaskView
-                                    task={task}
-                                    provided={providedDraggable}
-                                    state={props.name}
-                                />
+                                renderSmallTaskView(task, providedDraggable)
                             )}
                         </Draggable>)}
                     {provided.placeholder}
@@ -36,6 +45,6 @@ const Stage = memo((props: Props) => {
             )}
         </Droppable >
     )
-})
+}
 
 export default Stage

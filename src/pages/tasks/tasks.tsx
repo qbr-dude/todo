@@ -44,7 +44,7 @@ const Tasks = (props: Props) => {
 
     useEffect(() => {
         setStoredLists(stateLists);
-    }, [stateLists])
+    }, [stateLists]);
 
 
     /**
@@ -136,7 +136,7 @@ const Tasks = (props: Props) => {
     return (
         <div>
             <Helmet>
-                <title>Project №{id}</title>
+                <title>{projectName}</title>
             </Helmet>
             <div className={styles.header}>
                 <div className={styles.naming}>
