@@ -4,13 +4,13 @@
 
 ## Done
 
-    * 2 pages: Projects, Tasks
-    * Available  task edit
-    * Available task creation
-    * Provided saving to Session Store
+    2 pages: Projects, Tasks
+    Available  task edit
+    Available task creation
+    Provided saving to Session Store
 
 ## Rest to do
 
-    * Comments: addition, saving
-    * Search
-    * Adaptation to mobile devices
+    Comments: addition, saving
+    Search
+    Adaptation to mobile devices
