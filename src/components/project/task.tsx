@@ -95,8 +95,6 @@ export const ModalTaskView = memo((props: Props) => {
         // else
         //     setHasChanges(false);
 
-        console.log(str);
-
 
         setHasChanges(true);
     }

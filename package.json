@@ -2,7 +2,7 @@
   "name": "todo",
   "version": "0.2.0",
   "private": "false",
-  "homepage": "https://qbr-dude.github.io/",
+  "homepage": "https://qbr-dude.github.io/todo/#",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
